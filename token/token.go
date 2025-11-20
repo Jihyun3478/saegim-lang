@@ -20,3 +20,14 @@ const (
 	
 	VARIABLE = "변수"
 )
+
+var keywords = map[string]TokenType{
+	"변수": VARIABLE,
+}
+
+func CheckKeyword(keyword string) TokenType {
+	if tok, ok := keywords[keyword]; ok {
+		return tok
+	}
+	return IDENT
+}
