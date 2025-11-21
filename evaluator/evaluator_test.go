@@ -56,6 +56,31 @@ func TestEvalBooleanExpression(t *testing.T) {
     }
 }
 
+func TestIfElseExpressions(t *testing.T) {
+    tests := []struct {
+        input    string
+        expected interface{}
+    }{
+        {"만약 (참) { 10 }", 10},
+        {"만약 (거짓) { 10 }", nil},
+        {"만약 (1) { 10 }", 10},
+        {"만약 (1 < 2) { 10 }", 10},
+        {"만약 (1 > 2) { 10 }", nil},
+        {"만약 (1 > 2) { 10 } 아니면 { 20 }", 20},
+        {"만약 (1 < 2) { 10 } 아니면 { 20 }", 10},
+    }
+    
+    for _, tt := range tests {
+        evaluated := testEval(tt.input)
+        integer, ok := tt.expected.(int)
+        if ok {
+            testIntegerObject(t, evaluated, int64(integer))
+        } else {
+            testNullObject(t, evaluated)
+        }
+    }
+}
+
 func testEval(input string) object.Object {
     l := lexer.New(input)
     p := parser.New(l)
@@ -94,5 +119,13 @@ func testBooleanObject(t *testing.T, obj object.Object, expected bool) bool {
         return false
     }
     
+    return true
+}
+
+func testNullObject(t *testing.T, obj object.Object) bool {
+    if obj != NULL {
+        t.Errorf("object is not NULL. got=%T (%+v)", obj, obj)
+        return false
+    }
     return true
 }

@@ -28,12 +28,21 @@ func Eval(node ast.Node, environment *object.Environment) object.Object {
 
 	case *ast.ExpressionStatement:
 		return Eval(node.Expression, environment)
+
+	case *ast.BlockStatement:
+		return evalBlockStatement(node, environment)
+
+	case *ast.IfExpression:
+		return evalIfExpression(node, environment)
 	
 	case *ast.Identifier:
 		return evalIdentifier(node, environment)
 	
 	case *ast.IntegerLiteral:
 		return &object.Integer{Value: node.Value}
+
+	case *ast.Boolean:
+		return nativeBoolToBooleanObject(node.Value)
 
 	case *ast.InfixExpression:
 		left := Eval(node.Left, environment)
@@ -112,6 +121,35 @@ func evalIntegerInfixExpression(operator string, left, right object.Object) obje
 	}
 }
 
+func evalBlockStatement(block *ast.BlockStatement, environment *object.Environment) object.Object {
+	var result object.Object
+
+	for _, statement := range block.Statements {
+		result = Eval(statement, environment)
+
+		if result != nil && isError(result) {
+			return result
+		}
+	}
+
+	return result
+}
+
+func evalIfExpression(ifExpression *ast.IfExpression, environment *object.Environment) object.Object {
+	condition := Eval(ifExpression.Condition, environment)
+	if isError(condition) {
+		return  condition
+	}
+
+	if isTruthy(condition) {
+		return Eval(ifExpression.Consequence, environment)
+	} else if ifExpression.Alternative != nil {
+		return Eval(ifExpression.Alternative, environment)
+	} else {
+		return NULL
+	}
+}
+
 func nativeBoolToBooleanObject(input bool) *object.Boolean {
 	if input {
 		return TRUE
@@ -128,4 +166,17 @@ func isError(obj object.Object) bool {
 		return obj.Type() == object.ERROR_OBJ
 	}
 	return false
+}
+
+func isTruthy(obj object.Object) bool {
+	switch obj {
+	case NULL:
+		return false
+	case TRUE:
+		return true
+	case FALSE:
+		return false
+	default:
+		return true
+	}
 }

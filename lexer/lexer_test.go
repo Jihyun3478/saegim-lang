@@ -8,11 +8,18 @@ import (
 
 func TestNextToken(t *testing.T) {
     input := `
-변수 나이 = 25;
-변수 합 = 10 + 20;
-변수 결과 = 5 > 3;
-(5 + 2) * 3;
-`
+	변수 나이 = 25;
+	변수 합 = 10 + 20;
+	변수 결과 = 5 > 3;
+	(5 + 2) * 3;
+	만약 (나이 > 20) {
+		변수 상태 = 1;
+	} 아니면 {
+		변수 상태 = 0;
+	}
+	참
+	거짓
+	`
 
     tests := []struct {
         expectedType    token.TokenType
@@ -48,6 +55,31 @@ func TestNextToken(t *testing.T) {
         {token.ASTERISK, "*"},
         {token.INT, "3"},
         {token.SEMICOLON, ";"},
+        
+        {token.IF, "만약"},
+        {token.LPAREN, "("},
+        {token.IDENT, "나이"},
+        {token.GT, ">"},
+        {token.INT, "20"},
+        {token.RPAREN, ")"},
+        {token.LBRACE, "{"},
+        {token.VARIABLE, "변수"},
+        {token.IDENT, "상태"},
+        {token.ASSIGN, "="},
+        {token.INT, "1"},
+        {token.SEMICOLON, ";"},
+        {token.RBRACE, "}"},
+        {token.ELSE, "아니면"},
+        {token.LBRACE, "{"},
+        {token.VARIABLE, "변수"},
+        {token.IDENT, "상태"},
+        {token.ASSIGN, "="},
+        {token.INT, "0"},
+        {token.SEMICOLON, ";"},
+        {token.RBRACE, "}"},
+        
+        {token.TRUE, "참"},
+        {token.FALSE, "거짓"},
 
         {token.EOF, ""},
     }

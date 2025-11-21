@@ -88,6 +88,27 @@ func (expression *ExpressionStatement) String() string {
 	return ""
 }
 
+type BlockStatement struct {
+	Token token.Token
+	Statements []Statement
+}
+
+func (block *BlockStatement) statementNode() {}
+
+func (block *BlockStatement) TokenLiteral() string {
+	return block.Token.Literal
+}
+
+func (block *BlockStatement) String() string {
+	var out bytes.Buffer
+
+	for _, s := range block.Statements {
+		out.WriteString(s.String())
+	}
+
+	return out.String()
+}
+
 type Identifier struct {
 	Token token.Token
 	Value string
@@ -141,4 +162,48 @@ func (infix *InfixExpression) String() string {
 	out.WriteString(")")
 
 	return out.String()
+}
+
+type IfExpression struct {
+	Token token.Token
+	Condition Expression
+	Consequence *BlockStatement
+	Alternative *BlockStatement
+}
+
+func (ifExpression *IfExpression) expressionNode() {}
+
+func (ifExpression *IfExpression) TokenLiteral() string {
+	return ifExpression.Token.Literal
+}
+
+func (ifExpression *IfExpression) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("만약")
+	out.WriteString(ifExpression.Condition.String())
+	out.WriteString(" ")
+	out.WriteString(ifExpression.Consequence.String())
+
+	if ifExpression.Alternative != nil {
+		out.WriteString("아니면 ")
+		out.WriteString(ifExpression.Alternative.String())
+	}
+
+	return out.String()
+}
+
+type Boolean struct {
+	Token token.Token
+	Value bool
+}
+
+func (boolean *Boolean) expressionNode() {}
+
+func (boolean *Boolean) TokenLiteral() string {
+	return boolean.Token.Literal
+}
+
+func (boolean *Boolean) String() string {
+	return boolean.Token.Literal
 }
