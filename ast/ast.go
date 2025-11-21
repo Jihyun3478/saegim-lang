@@ -117,3 +117,28 @@ func (integerLiteral *IntegerLiteral) TokenLiteral() string {
 func (integerLiteral *IntegerLiteral) String() string {
 	return integerLiteral.Token.Literal
 }
+
+type InfixExpression struct {
+	Token token.Token
+	Left Expression
+	Operator string
+	Right Expression
+}
+
+func (infix *InfixExpression) expressionNode() {}
+
+func (infix *InfixExpression) TokenLiteral() string {
+	return infix.Token.Literal
+}
+
+func (infix *InfixExpression) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("(")
+	out.WriteString(infix.Left.String())
+	out.WriteString(" " + infix.Operator + " ")
+	out.WriteString(infix.Right.String())
+	out.WriteString(")")
+
+	return out.String()
+}

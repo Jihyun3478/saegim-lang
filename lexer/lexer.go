@@ -26,7 +26,43 @@ func (lexer *Lexer) NextToken() token.Token {
 
 	switch lexer.character {
 	case '=':
-		tok = newToken(token.ASSIGN, lexer.character)
+		if lexer.peekChar() == '=' {
+			ch := lexer.character
+			lexer.readChar()
+			tok = token.Token{
+				Type: token.EQ,
+				Literal: string(ch) + string(lexer.character),
+			}
+		} else {
+			tok = newToken(token.ASSIGN, lexer.character)
+		}
+	case '+':
+		tok = newToken(token.PLUS, lexer.character)
+	case '-':
+		tok = newToken(token.MINUS, lexer.character)
+	case '*':
+		tok = newToken(token.ASTERISK, lexer.character)
+	case '/':
+		tok = newToken(token.SLASH, lexer.character)
+	case '<':
+		tok = newToken(token.LT, lexer.character)
+	case '>':
+		tok = newToken(token.GT, lexer.character)
+	case '!':
+		if lexer.peekChar() == '=' {
+			ch := lexer.character
+			lexer.readChar()
+			tok = token.Token{
+				Type: token.NOT_EQ,
+				Literal: string(ch) + string(lexer.character),
+			}
+		} else {
+			tok = newToken(token.ILLEGAL, lexer.character)
+		}
+	case '(':
+		tok = newToken(token.LPAREN, lexer.character)
+	case ')':
+		tok = newToken(token.RPAREN, lexer.character)
 	case ',':
 		tok = newToken(token.COMMA, lexer.character)
 	case ';':
@@ -61,6 +97,14 @@ func (lexer *Lexer) readChar() {
 	}
 	lexer.position = lexer.readPosition
 	lexer.readPosition += 1
+}
+
+func (lexer *Lexer) peekChar() rune {
+	if lexer.readPosition >= len(lexer.input) {
+		return 0
+	} else {
+		return lexer.input[lexer.readPosition]
+	}
 }
 
 func newToken(tokenType token.TokenType, character rune) token.Token {

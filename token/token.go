@@ -15,8 +15,21 @@ const (
 	INT = "INT"
 
 	ASSIGN = "="
+	PLUS = "PLUS"
+	MINUS = "MINUS"
+	ASTERISK = "ASTERISK"
+	SLASH = "SLASH"
+
+	LT = "<"
+	GT = ">"
+	EQ = "=="
+	NOT_EQ = "!="
+
 	COMMA = ","
 	SEMICOLON = ";"
+
+	LPAREN = "("
+	RPAREN = ")"
 	
 	VARIABLE = "변수"
 )

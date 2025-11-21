@@ -1,12 +1,16 @@
 package evaluator
 
 import (
+	"fmt"
+
 	"github.com/Jihyun3478/saegim-lang/ast"
 	"github.com/Jihyun3478/saegim-lang/object"
 )
 
 var (
 	NULL = &object.Null{}
+	TRUE = &object.Boolean{Value: true}
+	FALSE = &object.Boolean{Value: false}
 )
 
 func Eval(node ast.Node, environment *object.Environment) object.Object {
@@ -30,6 +34,19 @@ func Eval(node ast.Node, environment *object.Environment) object.Object {
 	
 	case *ast.IntegerLiteral:
 		return &object.Integer{Value: node.Value}
+
+	case *ast.InfixExpression:
+		left := Eval(node.Left, environment)
+		if isError(left) {
+			return  left
+		}
+
+		right := Eval(node.Right, environment)
+		if isError(right) {
+			return right
+		}
+
+		return evalInfixExpression(node.Operator, left, right)
 	}
 
 	return NULL
@@ -55,6 +72,51 @@ func evalIdentifier(node *ast.Identifier, environment *object.Environment) objec
 		return newError("identifier not found: " + node.Value)
 	}
 	return value
+}
+
+func evalInfixExpression(operator string, left, right object.Object) object.Object {
+	if left.Type() == object.INTEGER_OBJ && right.Type() == object.INTEGER_OBJ {
+		return evalIntegerInfixExpression(operator, left, right)
+	}
+
+	if left.Type() != right.Type() {
+		return newError(fmt.Sprintf("type mismatch: %s %s %s", left.Type(), operator, right.Type()))
+	}
+
+	return newError(fmt.Sprintf("unknown operator: %s %s %s", left.Type(), operator, right.Type()))
+}
+
+func evalIntegerInfixExpression(operator string, left, right object.Object) object.Object {
+	leftValue := left.(*object.Integer).Value
+	rightValue := right.(*object.Integer).Value
+
+	switch operator {
+	case "+":
+		return &object.Integer{Value: leftValue + rightValue}
+	case "-":
+		return &object.Integer{Value: leftValue - rightValue}
+	case "*":
+		return &object.Integer{Value: leftValue * rightValue}
+	case "/":
+		return &object.Integer{Value: leftValue / rightValue}
+	case "<":
+		return nativeBoolToBooleanObject(leftValue < rightValue)
+	case ">":
+		return nativeBoolToBooleanObject(leftValue > rightValue)
+	case "==":
+		return nativeBoolToBooleanObject(leftValue == rightValue)
+	case "!=":
+		return nativeBoolToBooleanObject(leftValue != rightValue)
+	default:
+		return newError(fmt.Sprintf("unknown operator: %s %s %s", left.Type(), operator, right.Type()))
+	}
+}
+
+func nativeBoolToBooleanObject(input bool) *object.Boolean {
+	if input {
+		return TRUE
+	}
+	return FALSE
 }
 
 func newError(message string) *object.Error {
