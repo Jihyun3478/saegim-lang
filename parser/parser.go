@@ -54,7 +54,7 @@ func (parser *Parser) parseStatement() ast.Statement {
 	case token.VARIABLE:
 		return parser.parseVariableStatement()
 	default:
-		return nil
+		return parser.parseExpressionStatement()
 	}
 }
 
@@ -83,6 +83,31 @@ func (parser *Parser) parseVariableStatement() *ast.VariableStatement {
 	}
 
 	return statement
+}
+
+func (parser *Parser) parseExpressionStatement() *ast.ExpressionStatement{
+	statement := &ast.ExpressionStatement{Token: parser.currentToken}
+	statement.Expression = parser.parseExpression()
+
+	if parser.peekTokenIs(token.SEMICOLON) {
+		parser.nextToken()
+	}
+	
+	return statement
+}
+
+func (parser *Parser) parseExpression() ast.Expression {
+	switch parser.currentToken.Type {
+	case token.IDENT:
+		return &ast.Identifier{
+			Token: parser.currentToken,
+			Value: parser.currentToken.Literal,
+		}
+	case token.INT:
+		return parser.parseIntegerLiteral()
+	default:
+		return nil
+	}
 }
 
 func (parser *Parser) parseIntegerLiteral() ast.Expression {
