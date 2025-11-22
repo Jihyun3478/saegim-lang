@@ -153,6 +153,10 @@ func evalIntegerInfixExpression(operator string, left, right object.Object) obje
 		return nativeBoolToBooleanObject(leftValue < rightValue)
 	case ">":
 		return nativeBoolToBooleanObject(leftValue > rightValue)
+	case "<=":
+		return nativeBoolToBooleanObject(leftValue <= rightValue)
+	case ">=":
+		return nativeBoolToBooleanObject(leftValue >= rightValue)
 	case "==":
 		return nativeBoolToBooleanObject(leftValue == rightValue)
 	case "!=":

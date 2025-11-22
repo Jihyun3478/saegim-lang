@@ -52,9 +52,27 @@ func (lexer *Lexer) NextToken() token.Token {
 	case '/':
 		tok = newToken(token.SLASH, lexer.character)
 	case '<':
-		tok = newToken(token.LT, lexer.character)
+		if lexer.peekChar() == '=' {
+			ch := lexer.character
+			lexer.readChar()
+			tok = token.Token{
+				Type: token.LTE,
+				Literal: string(ch) + string(lexer.character),
+			}
+		} else {
+			tok = newToken(token.LT, lexer.character)
+		}
 	case '>':
-		tok = newToken(token.GT, lexer.character)
+		if lexer.peekChar() == '=' {
+			ch := lexer.character
+			lexer.readChar()
+			tok = token.Token{
+				Type: token.GTE,
+				Literal: string(ch) + string(lexer.character),
+			}
+		} else {
+			tok = newToken(token.GT, lexer.character)
+		}
 	case '!':
 		if lexer.peekChar() == '=' {
 			ch := lexer.character
