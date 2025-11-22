@@ -34,6 +34,13 @@ func Eval(node ast.Node, environment *object.Environment) object.Object {
 
 	case *ast.IfExpression:
 		return evalIfExpression(node, environment)
+
+	case *ast.ReturnStatement:
+		value := Eval(node.ReturnValue, environment)
+		if isError(value) {
+			return value
+		}
+		return &object.ReturnValue{Value: value}
 	
 	case *ast.Identifier:
 		return evalIdentifier(node, environment)
@@ -43,6 +50,24 @@ func Eval(node ast.Node, environment *object.Environment) object.Object {
 
 	case *ast.Boolean:
 		return nativeBoolToBooleanObject(node.Value)
+
+	case *ast.FunctionalLiteral:
+		parameters := node.Parameters
+		body := node.Body
+		return &object.Function{Parameters: parameters, Env: environment, Body: body}
+
+	case *ast.CallExpression:
+		function := Eval(node.Function, environment)
+		if isError(function) {
+			return function
+		}
+
+		arguments := evalExpressions(node.Arguments, environment)
+		if len(arguments) == 1 && isError(arguments[0]) {
+			return arguments[0]
+		}
+
+		return applyFunction(function, arguments)
 
 	case *ast.InfixExpression:
 		left := Eval(node.Left, environment)
@@ -67,7 +92,10 @@ func evalProgram(program *ast.Program, environment *object.Environment) object.O
 	for _, statement := range program.Statements {
 		result = Eval(statement, environment)
 
-		if isError(result) {
+		switch result := result.(type) {
+		case *object.ReturnValue:
+			return result.Value
+		case *object.Error:
 			return result
 		}
 	}
@@ -127,8 +155,11 @@ func evalBlockStatement(block *ast.BlockStatement, environment *object.Environme
 	for _, statement := range block.Statements {
 		result = Eval(statement, environment)
 
-		if result != nil && isError(result) {
-			return result
+		if result != nil {
+			resultType := result.Type()
+			if resultType == object.RETURN_VALUE_OBJ || resultType == object.ERROR_OBJ {
+				return result
+			}
 		}
 	}
 
@@ -148,6 +179,48 @@ func evalIfExpression(ifExpression *ast.IfExpression, environment *object.Enviro
 	} else {
 		return NULL
 	}
+}
+
+func evalExpressions(expressions []ast.Expression, environment *object.Environment) []object.Object {
+	var result []object.Object
+
+	for _, expression := range expressions {
+		evaluated := Eval(expression, environment)
+		if isError(evaluated) {
+			return []object.Object{evaluated}
+		}
+		result = append(result, evaluated)
+	}
+
+	return result
+}
+
+func applyFunction(fn object.Object, arguments []object.Object) object.Object {
+	function, ok := fn.(*object.Function)
+	if !ok {
+		return newError(fmt.Sprintf("not a function: %s", fn.Type()))
+	}
+
+	extendedEnv := extendFunctionEnv(function, arguments)
+	evaluated := Eval(function.Body, extendedEnv)
+	return unwrapReturnValue(evaluated)
+}
+
+func extendFunctionEnv(fn *object.Function, arguments []object.Object) *object.Environment {
+	environment := object.NewEnclosedEnvironment(fn.Env)
+
+	for parameterIndex, parameter := range fn.Parameters {
+		environment.Set(parameter.Value, arguments[parameterIndex])
+	}
+
+	return environment
+}
+
+func unwrapReturnValue(obj object.Object) object.Object {
+	if returnValue, ok := obj.(*object.ReturnValue); ok {
+		return returnValue.Value
+	}
+	return obj
 }
 
 func nativeBoolToBooleanObject(input bool) *object.Boolean {

@@ -81,6 +81,61 @@ func TestIfElseExpressions(t *testing.T) {
     }
 }
 
+func TestFunctionObject(t *testing.T) {
+    input := "함수(나이) { 나이 + 1; };"
+    
+    evaluated := testEval(input)
+    
+    fn, ok := evaluated.(*object.Function)
+    if !ok {
+        t.Fatalf("object is not Function. got=%T (%+v)", evaluated, evaluated)
+    }
+    
+    if len(fn.Parameters) != 1 {
+        t.Fatalf("function has wrong parameters. Parameters=%+v",
+            fn.Parameters)
+    }
+    
+    if fn.Parameters[0].String() != "나이" {
+        t.Fatalf("parameter is not '나이'. got=%q", fn.Parameters[0])
+    }
+}
+
+func TestFunctionApplication(t *testing.T) {
+    tests := []struct {
+        input    string
+        expected int64
+    }{
+        {"변수 항등 = 함수(나이) { 나이; }; 항등(5);", 5},
+        {"변수 항등 = 함수(나이) { 반환 나이; }; 항등(5);", 5},
+        {"변수 더블 = 함수(나이) { 나이 * 2; }; 더블(5);", 10},
+        {"변수 더하기 = 함수(첫째, 둘째) { 첫째 + 둘째; }; 더하기(5, 5);", 10},
+        {"변수 더하기 = 함수(첫째, 둘째) { 첫째 + 둘째; }; 더하기(5 + 5, 더하기(5, 5));", 20},
+        {"함수(나이) { 나이; }(5)", 5},
+    }
+    
+    for _, tt := range tests {
+        testIntegerObject(t, testEval(tt.input), tt.expected)
+    }
+}
+
+func TestReturnStatements(t *testing.T) {
+    tests := []struct {
+        input    string
+        expected int64
+    }{
+        {"반환 10;", 10},
+        {"반환 10; 9;", 10},
+        {"반환 2 * 5; 9;", 10},
+        {"9; 반환 2 * 5; 9;", 10},
+    }
+    
+    for _, tt := range tests {
+        evaluated := testEval(tt.input)
+        testIntegerObject(t, evaluated, tt.expected)
+    }
+}
+
 func testEval(input string) object.Object {
     l := lexer.New(input)
     p := parser.New(l)

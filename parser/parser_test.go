@@ -173,7 +173,7 @@ func TestIfExpression(t *testing.T) {
 }
 
 func TestIfElseExpression(t *testing.T) {
-    input := `만약 (x < y) { x } 아니면 { y }`
+    input := `만약 (나이 < 키) { 나이 } 아니면 { 키 }`
     
     l := lexer.New(input)
     p := New(l)
@@ -197,7 +197,7 @@ func TestIfElseExpression(t *testing.T) {
             stmt.Expression)
     }
     
-    if !testInfixExpression(t, exp.Condition, "x", "<", "y") {
+    if !testInfixExpression(t, exp.Condition, "나이", "<", "키") {
         return
     }
     
@@ -212,7 +212,7 @@ func TestIfElseExpression(t *testing.T) {
             exp.Consequence.Statements[0])
     }
     
-    if !testIdentifier(t, consequence.Expression, "x") {
+    if !testIdentifier(t, consequence.Expression, "나이") {
         return
     }
     
@@ -227,7 +227,7 @@ func TestIfElseExpression(t *testing.T) {
             exp.Alternative.Statements[0])
     }
     
-    if !testIdentifier(t, alternative.Expression, "y") {
+    if !testIdentifier(t, alternative.Expression, "키") { 
         return
     }
 }

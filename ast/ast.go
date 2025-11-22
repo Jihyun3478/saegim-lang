@@ -2,7 +2,8 @@ package ast
 
 import (
 	"bytes"
-	
+	"strings"
+
 	"github.com/Jihyun3478/saegim-lang/token"
 )
 
@@ -206,4 +207,86 @@ func (boolean *Boolean) TokenLiteral() string {
 
 func (boolean *Boolean) String() string {
 	return boolean.Token.Literal
+}
+
+type FunctionalLiteral struct {
+	Token token.Token
+	Parameters []*Identifier
+	Body *BlockStatement
+}
+
+func (functionalLiteral *FunctionalLiteral) expressionNode() {}
+
+func (functionalLiteral *FunctionalLiteral) TokenLiteral() string {
+	return functionalLiteral.Token.Literal
+}
+
+func (functionalLiteral *FunctionalLiteral) String() string {
+	var out bytes.Buffer
+
+	parameters := []string{}
+	for _, p := range functionalLiteral.Parameters {
+		parameters = append(parameters, p.String())
+	}
+
+	out.WriteString(functionalLiteral.TokenLiteral())
+	out.WriteString("(")
+	out.WriteString(strings.Join(parameters, ", "))
+	out.WriteString(") ")
+	out.WriteString(functionalLiteral.Body.String())
+
+	return out.String()
+}
+
+type CallExpression struct {
+	Token token.Token
+	Function Expression
+	Arguments []Expression
+}
+
+func (callExpression *CallExpression) expressionNode() {}
+
+func (callExpression *CallExpression) TokenLiteral() string {
+	return callExpression.Token.Literal
+}
+
+func (callExpression *CallExpression) String() string {
+	var out bytes.Buffer
+
+	arguments := []string{}
+	for _, a := range callExpression.Arguments {
+		arguments = append(arguments, a.String())
+	}
+
+	out.WriteString(callExpression.Function.String())
+	out.WriteString("(")
+	out.WriteString(strings.Join(arguments, ", "))
+	out.WriteString(") ")
+
+	return out.String()
+}
+
+type ReturnStatement struct {
+	Token token.Token
+	ReturnValue Expression
+}
+
+func (returnStatement *ReturnStatement) statementNode() {}
+
+func (returnStatement *ReturnStatement) TokenLiteral() string {
+	return returnStatement.Token.Literal
+}
+
+func (returnStatement *ReturnStatement) String() string {
+	var out bytes.Buffer
+
+	out.WriteString(returnStatement.TokenLiteral() + " ")
+
+	if returnStatement.ReturnValue != nil {
+		out.WriteString(returnStatement.ReturnValue.String())
+	}
+
+	out.WriteString(";")
+
+	return out.String()
 }

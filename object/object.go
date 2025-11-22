@@ -1,6 +1,12 @@
 package object
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+	"bytes"
+	
+	"github.com/Jihyun3478/saegim-lang/ast"
+)
 
 type ObjectType string
 
@@ -9,6 +15,8 @@ const (
 	BOOLEAN_OBJ = "BOOLEAN"
 	NULL_OBJ = "NULL"
 	ERROR_OBJ = "ERROR"
+	RETURN_VALUE_OBJ = "RETURN_VALUE"
+	FUNCTION_OBJ = "FUNCTION"
 )
 
 type Object interface {
@@ -60,4 +68,44 @@ func (error *Error) Type() ObjectType {
 
 func (error *Error) Inspect() string {
 	return "ERROR: " + error.Message
+}
+
+type ReturnValue struct {
+	Value Object
+}
+
+func (returnValue *ReturnValue) Type() ObjectType {
+	return RETURN_VALUE_OBJ
+}
+
+func (returnValue *ReturnValue) Inspect() string {
+	return returnValue.Value.Inspect()
+}
+
+type Function struct {
+	Parameters []*ast.Identifier
+	Body *ast.BlockStatement
+	Env *Environment
+}
+
+func (function *Function) Type() ObjectType {
+	return FUNCTION_OBJ
+}
+
+func (function *Function) Inspect() string {
+	var out bytes.Buffer
+
+	parameters := []string{}
+	for _, p := range function.Parameters {
+		parameters = append(parameters, p.String())
+	}
+
+	out.WriteString("함수")
+	out.WriteString("(")
+	out.WriteString(strings.Join(parameters, ", "))
+	out.WriteString(") {\n")
+	out.WriteString(function.Body.String())
+	out.WriteString("\n}")
+
+	return out.String()
 }

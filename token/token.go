@@ -38,6 +38,8 @@ const (
 	ELSE = "아니면"
 	TRUE = "참"
 	FALSE = "거짓"
+	FUNCTION = "함수"
+	RETURN = "반환"
 )
 
 var keywords = map[string]TokenType{
@@ -46,6 +48,8 @@ var keywords = map[string]TokenType{
 	"아니면": ELSE,
 	"참": TRUE,
 	"거짓": FALSE,
+	"함수": FUNCTION,
+	"반환": RETURN,
 }
 
 func CheckKeyword(keyword string) TokenType {
