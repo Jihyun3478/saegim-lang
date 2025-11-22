@@ -13,15 +13,10 @@ var (
 	FALSE = &object.Boolean{Value: false}
 )
 
-var builtins = map[string]*object.Builtin{
-	"출력": &object.Builtin{
-		Fn: func(arguments ...object.Object) object.Object {
-			for _, argument := range arguments {
-				fmt.Println(argument.Inspect())
-			}
-			return NULL
-		},
-	},
+var builtins = StandardBuiltins
+
+func SetBuiltins(buildinMap map[string]*object.Builtin) {
+	builtins = buildinMap
 }
 
 func Eval(node ast.Node, environment *object.Environment) object.Object {

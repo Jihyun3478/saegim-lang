@@ -9,11 +9,18 @@ type Lexer struct {
 	position int
 	readPosition int
 	character rune
+	keywordSet token.KeywordSet
 }
 
-func New(input string) *Lexer {
+func New(input string, keywordSet ...token.KeywordSet) *Lexer {
+	ks := token.StandardKeywords
+	if len(keywordSet) > 0 {
+		ks = keywordSet[0]
+	}
+
 	lexer := &Lexer{
 		input: []rune(input),
+		keywordSet: ks,
 	}
 	lexer.readChar()
 	return lexer
@@ -80,7 +87,7 @@ func (lexer *Lexer) NextToken() token.Token {
 	default:
 		if isKorean(lexer.character) {
 			tok.Literal = lexer.readIdentifier()
-			tok.Type = token.CheckKeyword(tok.Literal)
+			tok.Type = token.CheckKeyword(tok.Literal, lexer.keywordSet)
 			return tok
 		} else if isDigit(lexer.character) {
 			tok.Type = token.INT

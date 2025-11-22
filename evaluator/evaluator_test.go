@@ -2,10 +2,11 @@ package evaluator
 
 import (
     "testing"
-    
-    "github.com/Jihyun3478/saegim-lang/lexer"
-    "github.com/Jihyun3478/saegim-lang/parser"
-    "github.com/Jihyun3478/saegim-lang/object"
+	
+	"github.com/Jihyun3478/saegim-lang/token"
+	"github.com/Jihyun3478/saegim-lang/lexer"
+	"github.com/Jihyun3478/saegim-lang/parser"
+	"github.com/Jihyun3478/saegim-lang/object"
 )
 
 func TestEvalIntegerExpression(t *testing.T) {
@@ -150,6 +151,36 @@ func TestStringLiteral(t *testing.T) {
     }
 }
 
+func TestStandardDialect(t *testing.T) {
+    tests := []struct {
+        input    string
+        expected int64
+    }{
+        {"변수 나이 = 25; 나이;", 25},
+        {"만약 (참) { 10 }", 10},
+    }
+    
+    for _, tt := range tests {
+        evaluated := testEvalStandard(tt.input)
+        testIntegerObject(t, evaluated, tt.expected)
+    }
+}
+
+func TestChungcheongDialect(t *testing.T) {
+    tests := []struct {
+        input    string
+        expected int64
+    }{
+        {"변수 나이 = 25; 나이;", 25},
+        {"이쪽이에유 (맞어유) { 10 }", 10},
+    }
+    
+    for _, tt := range tests {
+        evaluated := testEvalChungcheong(tt.input)
+        testIntegerObject(t, evaluated, tt.expected)
+    }
+}
+
 func TestBuiltinFunctions(t *testing.T) {
     tests := []struct {
         input    string
@@ -170,6 +201,24 @@ func testEval(input string) object.Object {
     program := p.ParseProgram()
     env := object.NewEnvironment()
     
+    return Eval(program, env)
+}
+
+func testEvalStandard(input string) object.Object {
+    SetBuiltins(StandardBuiltins)
+    l := lexer.New(input, token.StandardKeywords)
+    p := parser.New(l)
+    program := p.ParseProgram()
+    env := object.NewEnvironment()
+    return Eval(program, env)
+}
+
+func testEvalChungcheong(input string) object.Object {
+    SetBuiltins(ChungcheongBuiltins)
+    l := lexer.New(input, token.ChungcheongKeywords)
+    p := parser.New(l)
+    program := p.ParseProgram()
+    env := object.NewEnvironment()
     return Eval(program, env)
 }
 
