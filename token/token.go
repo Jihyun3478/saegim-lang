@@ -40,6 +40,8 @@ const (
 	FALSE = "거짓"
 	FUNCTION = "함수"
 	RETURN = "반환"
+	PRINT = "출력"
+	STRING = "STRING"
 )
 
 var keywords = map[string]TokenType{
@@ -50,6 +52,7 @@ var keywords = map[string]TokenType{
 	"거짓": FALSE,
 	"함수": FUNCTION,
 	"반환": RETURN,
+	"출력": PRINT,
 }
 
 func CheckKeyword(keyword string) TokenType {

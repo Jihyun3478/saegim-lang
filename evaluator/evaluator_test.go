@@ -136,6 +136,34 @@ func TestReturnStatements(t *testing.T) {
     }
 }
 
+func TestStringLiteral(t *testing.T) {
+    input := `"안녕하세요"`
+    
+    evaluated := testEval(input)
+    str, ok := evaluated.(*object.String)
+    if !ok {
+        t.Fatalf("object is not String. got=%T (%+v)", evaluated, evaluated)
+    }
+    
+    if str.Value != "안녕하세요" {
+        t.Errorf("String has wrong value. got=%q", str.Value)
+    }
+}
+
+func TestBuiltinFunctions(t *testing.T) {
+    tests := []struct {
+        input    string
+        expected interface{}
+    }{
+        {`출력(25)`, nil},
+        {`출력("안녕")`, nil},
+    }
+    
+    for _, tt := range tests {
+        testEval(tt.input)
+    }
+}
+
 func testEval(input string) object.Object {
     l := lexer.New(input)
     p := parser.New(l)

@@ -13,6 +13,17 @@ var (
 	FALSE = &object.Boolean{Value: false}
 )
 
+var builtins = map[string]*object.Builtin{
+	"출력": &object.Builtin{
+		Fn: func(arguments ...object.Object) object.Object {
+			for _, argument := range arguments {
+				fmt.Println(argument.Inspect())
+			}
+			return NULL
+		},
+	},
+}
+
 func Eval(node ast.Node, environment *object.Environment) object.Object {
 	switch node := node.(type) {
 	case *ast.Program:
@@ -69,6 +80,9 @@ func Eval(node ast.Node, environment *object.Environment) object.Object {
 
 		return applyFunction(function, arguments)
 
+	case *ast.StringLiteral:
+		return &object.String{Value: node.Value}
+	
 	case *ast.InfixExpression:
 		left := Eval(node.Left, environment)
 		if isError(left) {
@@ -104,11 +118,15 @@ func evalProgram(program *ast.Program, environment *object.Environment) object.O
 }
 
 func evalIdentifier(node *ast.Identifier, environment *object.Environment) object.Object {
-	value, ok := environment.Get(node.Value)
-	if !ok {
-		return newError("identifier not found: " + node.Value)
+	if value, ok := environment.Get(node.Value); ok {
+		return value
 	}
-	return value
+
+	if builtin, ok := builtins[node.Value]; ok {
+		return builtin
+	}
+
+	return newError("identifier not found: " + node.Value)
 }
 
 func evalInfixExpression(operator string, left, right object.Object) object.Object {
@@ -195,15 +213,20 @@ func evalExpressions(expressions []ast.Expression, environment *object.Environme
 	return result
 }
 
-func applyFunction(fn object.Object, arguments []object.Object) object.Object {
-	function, ok := fn.(*object.Function)
-	if !ok {
-		return newError(fmt.Sprintf("not a function: %s", fn.Type()))
-	}
+func applyFunction(function object.Object, arguments []object.Object) object.Object {
+	switch function := function.(type) {
 
-	extendedEnv := extendFunctionEnv(function, arguments)
-	evaluated := Eval(function.Body, extendedEnv)
-	return unwrapReturnValue(evaluated)
+	case *object.Function:
+		extendedEnv := extendFunctionEnv(function, arguments)
+		evaluated := Eval(function.Body, extendedEnv)
+		return unwrapReturnValue(evaluated)
+	
+	case *object.Builtin:
+		return function.Fn(arguments...)
+
+	default:
+		return newError(fmt.Sprintf("not a function: %s", function.Type()))
+	}
 }
 
 func extendFunctionEnv(fn *object.Function, arguments []object.Object) *object.Environment {
