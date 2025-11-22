@@ -8,5 +8,4 @@ var ChungcheongKeywords = KeywordSet{
 	"아녀유": FALSE,
 	"함수": FUNCTION,
 	"도루": RETURN,
-	"출력해유": PRINT,
 }

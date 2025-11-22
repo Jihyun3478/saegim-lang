@@ -8,5 +8,4 @@ var StandardKeywords = KeywordSet{
 	"거짓": FALSE,
 	"함수": FUNCTION,
 	"반환": RETURN,
-	"출력": PRINT,
 }
