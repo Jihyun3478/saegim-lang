@@ -15,10 +15,10 @@ const (
 	INT = "INT"
 
 	ASSIGN = "="
-	PLUS = "PLUS"
-	MINUS = "MINUS"
-	ASTERISK = "ASTERISK"
-	SLASH = "SLASH"
+	PLUS = "+"
+	MINUS = "-"
+	ASTERISK = "*"
+	SLASH = "/"
 
 	LT = "<"
 	GT = ">"
