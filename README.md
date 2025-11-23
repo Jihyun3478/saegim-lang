@@ -12,7 +12,7 @@
 
 ## 설치
 ```bash
-git clone https://github.com/Jihyun3478/saegim-lang
+git clone https://github.com/Jihyun3478/saegim-lang.git
 ```
 
 ---
@@ -23,17 +23,6 @@ git clone https://github.com/Jihyun3478/saegim-lang
 go run main.go
 ```
 
-### 표준어 버전 예제 파일 실행
-```bash
-go run main.go examples/hello.sg
-```
-
-### 충청도 방언 버전 예제 파일 실행
-```bash
-go run main.go examples/hello.hbg
-```
-
-### 실행 후 언어 모드 선택
 ```
  ███████╗ █████╗ ███████╗ ██████╗ ██╗███╗   ███╗
  ██╔════╝██╔══██╗██╔════╝██╔════╝ ██║████╗ ████║
@@ -58,6 +47,16 @@ go run main.go examples/hello.hbg
 지현
 >> exit
 안녕히 가세요.
+```
+
+## 표준어 버전 예제 파일 실행
+```bash
+go run main.go examples/hello.sg
+```
+
+## 충청도 방언 버전 예제 파일 실행
+```bash
+go run main.go examples/hello.hbg
 ```
 
 ---
