@@ -99,6 +99,7 @@ func (lexer *Lexer) NextToken() token.Token {
 	case '"':
 		tok.Type = token.STRING
 		tok.Literal = lexer.readString()
+		return tok
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
@@ -175,7 +176,10 @@ func (lexer *Lexer) readString() string {
 			break
 		}
 	}
-	return string(lexer.input[position:lexer.position])
+	str := string(lexer.input[position:lexer.position])
+	lexer.readChar()
+	
+	return str
 }
 
 func (lexer *Lexer) skipWhitespace() {
