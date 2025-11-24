@@ -49,12 +49,12 @@ go run main.go
 안녕히 가세요.
 ```
 
-## 표준어 버전 예제 파일 실행
+### 표준어 버전 예제 파일 실행
 ```bash
 go run main.go examples/hello.sg
 ```
 
-## 충청도 방언 버전 예제 파일 실행
+### 충청도 방언 버전 예제 파일 실행
 ```bash
 go run main.go examples/hello.hbg
 ```
@@ -231,8 +231,18 @@ saegim-lang/
 ---
 
 ## 참고 자료
-- [밑바닥부터 만드는 인터프리터 in Go](https://product.kyobobook.co.kr/detail/S000001033117) by Thorsten Ball
+- [밑바닥부터 만드는 인터프리터 in Go](https://product.kyobobook.co.kr/detail/S000001033117)
+- [Let's build a simple interpreter](https://ruslanspivak.com/lsbasi-part13/)
 - [프랫 파서](https://tdop.github.io/)
+
+---
+
+## 🔗 링크
+- GitHub: [saegim-lang](https://github.com/Jihyun3478/saegim-lang)
+- Blog
+  - [[새김 언어 제작기] 1. 한글 처리 (feat. 유니코드와 렉서)](https://jihyun-devstory.tistory.com/90)
+  - [[새김 언어 제작기] 2. 파서의 함정들 (feat. 연산자와 출력 함수)](https://jihyun-devstory.tistory.com/94)
+  - [[새김 언어 제작기] 3. 언어 확장하기 (feat. 방언 지원)](https://jihyun-devstory.tistory.com/95)
 
 ---
 
