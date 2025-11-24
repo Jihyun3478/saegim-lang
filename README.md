@@ -61,10 +61,12 @@ go run main.go
 
 #### 표준어 버전(새김) 실행 영상
 - [Youtube 링크](https://www.youtube.com/watch?v=eXHrPp-rDbM)
+
 https://github.com/user-attachments/assets/96a81768-22d4-487c-b555-d6342640a8d0
 
 #### 충청도 방언 버전(해볼겨) 실행 영상
 - [Youtube 링크](https://www.youtube.com/watch?v=Ub9dY5__jbI)
+
 https://github.com/user-attachments/assets/3cee6654-bf67-4090-b8d6-04b2796a101f
 
 ---
