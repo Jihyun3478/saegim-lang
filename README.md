@@ -235,6 +235,12 @@ saegim-lang/
 
 ---
 
+## 관련 리포지토리
+- [Go 언어 학습 과정](https://github.com/Jihyun3478/study-go-language)
+- [인터프리터 원리 학습](https://github.com/Jihyun3478/logi-lang)
+
+---
+
 ## 참고 자료
 - [밑바닥부터 만드는 인터프리터 in Go](https://product.kyobobook.co.kr/detail/S000001033117)
 - [Let's build a simple interpreter](https://ruslanspivak.com/lsbasi-part13/)
