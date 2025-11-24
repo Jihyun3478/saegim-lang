@@ -18,6 +18,16 @@ git clone https://github.com/Jihyun3478/saegim-lang.git
 ---
 
 ## 사용법
+### 표준어 버전 예제 파일 실행
+```bash
+go run main.go examples/hello.sg
+```
+
+### 충청도 방언 버전 예제 파일 실행
+```bash
+go run main.go examples/hello.hbg
+```
+
 ### 기본 실행
 ```bash
 go run main.go
@@ -47,16 +57,6 @@ go run main.go
 지현
 >> exit
 안녕히 가세요.
-```
-
-### 표준어 버전 예제 파일 실행
-```bash
-go run main.go examples/hello.sg
-```
-
-### 충청도 방언 버전 예제 파일 실행
-```bash
-go run main.go examples/hello.hbg
 ```
 
 ---
@@ -195,23 +195,6 @@ go run main.go examples/hello.hbg
 };
 
 출력해유(피보나치(10));
-```
-
-### 클로저
-**표준어**
-```
-변수 카운터만들기 = 함수() {
-    변수 개수 = 0;
-    반환 함수() {
-        개수 = 개수 + 1;
-        반환 개수;
-    };
-};
-
-변수 카운터 = 카운터만들기();
-출력(카운터());
-출력(카운터());
-출력(카운터());
 ```
 
 ## 패키지 구조
