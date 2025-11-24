@@ -75,6 +75,12 @@ https://github.com/user-attachments/assets/3cee6654-bf67-4090-b8d6-04b2796a101f
 
 ---
 
+## REPL 모드 주의사항
+- REPL은 **한 줄 단위**로 파싱합니다.
+- 중괄호(`{}`)가 포함된 조건문, 함수 등은 한 줄로 입력해야 합니다.
+
+---
+
 ## 문법
 ### 표준어
 | 키워드 | 설명 |
@@ -121,6 +127,8 @@ https://github.com/user-attachments/assets/3cee6654-bf67-4090-b8d6-04b2796a101f
 - `>=` 크거나 같음
 - `==` 같음
 - `!=` 다름
+
+---
 
 ## 예제
 ### Hello World
