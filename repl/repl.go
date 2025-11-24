@@ -23,13 +23,24 @@ const SAEGIM_LOGO = `
  ╚══════╝╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═╝╚═╝     ╚═╝
 `
 
+const HAEBOLGYEO_LOGO = `
+ ██╗  ██╗ █████╗ ███████╗██████╗  ██████╗ ██╗      ██████╗ ██╗   ██╗███████╗ ██████╗ 
+ ██║  ██║██╔══██╗██╔════╝██╔══██╗██╔═══██╗██║     ██╔════╝ ╚██╗ ██╔╝██╔════╝██╔═══██╗
+ ███████║███████║█████╗  ██████╔╝██║   ██║██║     ██║  ███╗ ╚████╔╝ █████╗  ██║   ██║
+ ██╔══██║██╔══██║██╔══╝  ██╔══██╗██║   ██║██║     ██║   ██║  ╚██╔╝  ██╔══╝  ██║   ██║
+ ██║  ██║██║  ██║███████╗██████╔╝╚██████╔╝███████╗╚██████╔╝   ██║   ███████╗╚██████╔╝
+ ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═════╝  ╚═════╝ ╚══════╝ ╚═════╝    ╚═╝   ╚══════╝ ╚═════╝ 
+`
+
 func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
 
-	fmt.Fprintln(out, SAEGIM_LOGO)
-	fmt.Fprintln(out, "새김 언어 인터프리터")
-	fmt.Fprintln(out)
-	fmt.Fprintln(out, "모드를 선택하세요")
+	fmt.Fprintln(out, "");
+	fmt.Fprintln(out, "=============================================")
+	fmt.Fprintln(out, "한글 프로그래밍 언어를 직접 사용해 보세요!")
+	fmt.Fprintln(out, "=============================================")
+	fmt.Fprintln(out, "");
+	fmt.Fprintln(out, "모드를 선택하세요.")
 	fmt.Fprintln(out, "1. 표준어 버전")
 	fmt.Fprintln(out, "2. 충청도 방언 버전")
 	fmt.Fprint(out, "\n선택: ")
@@ -43,11 +54,13 @@ func Start(in io.Reader, out io.Writer) {
 	if mode == "1" {
 		keywords = token.StandardKeywords
 		builtins = evaluator.StandardBuiltins
-		fmt.Fprintln(out, "\n표준어 모드")
+		fmt.Fprintln(out, "\n"+SAEGIM_LOGO)
+		fmt.Fprintln(out, "표준어 버전 - '새김' 언어")
 	} else if mode == "2" {
 		keywords = token.ChungcheongKeywords
 		builtins = evaluator.ChungcheongBuiltins
-		fmt.Fprintln(out, "\n충청도 모드")
+		fmt.Fprintln(out, "\n"+HAEBOLGYEO_LOGO)
+		fmt.Fprintln(out, "충청도 버전 - '해볼겨' 언어")
 	} else {
 		fmt.Fprintln(out, "잘못된 선택입니다.")
 		return
@@ -57,7 +70,7 @@ func Start(in io.Reader, out io.Writer) {
 
 	fmt.Fprintln(out)
 	fmt.Fprintln(out, "코드를 입력하세요 (종료 - exit)")
-	fmt.Fprintln(out, "-----------------------------")
+	fmt.Fprintln(out, "-------------------------------")
 
 	env := object.NewEnvironment()
 
