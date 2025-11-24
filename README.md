@@ -59,6 +59,12 @@ go run main.go
 안녕히 가세요.
 ```
 
+#### 표준어 버전 실행 영상
+https://github.com/user-attachments/assets/96a81768-22d4-487c-b555-d6342640a8d0
+
+#### 충청도 방언 버전 실행 영상
+https://github.com/user-attachments/assets/3cee6654-bf67-4090-b8d6-04b2796a101f
+
 ---
 
 ## 문법
